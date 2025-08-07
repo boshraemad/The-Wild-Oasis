@@ -9,3 +9,8 @@ export const getCabins=async()=>{
 
     return data;
 }
+
+export const deleteCabin=async(id)=>{
+    const {data , error}=await supabase.from("cabins").delete().eq("id",id);
+    return data;
+}
