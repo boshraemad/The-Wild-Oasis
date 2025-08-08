@@ -6,29 +6,61 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
 import { useMutation , useQueryClient } from "@tanstack/react-query";
-import { addCabin } from "../../services/apiCabins";
+import { createEditCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
 import FormRow from "./CabinFormRow";
 
-function CreateCabinForm() {
-  const {register , handleSubmit , reset, getValues , formState}=useForm();
+function CreateCabinForm({editCabin={}}) {
+  const {id:cabinId , ...editValues}=editCabin;
+  const isEdit=Boolean(cabinId);
+
+  const {register , handleSubmit , reset, getValues , formState}=useForm({
+    defaultValues:isEdit ? editValues : ""
+  });
   const {errors}=formState;
   const queryClient=useQueryClient();
 
-  const {isLoading:isAdding , mutate}=useMutation({
-    mutationFn:addCabin,
-    onSuccess:()=>{
-      toast.success("cabin added successfully");
-      queryClient.invalidateQueries({queryKey:["cabins"]});
-      reset();
+  const { mutate: creatingCabin, isLoading: isCreating } = useMutation({
+    mutationFn: createEditCabin,
+    onSuccess: () => {
+      toast.success("New cabin successfully created");
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
     },
-    onError:()=>{
-      toast.error("couldnt add cabin");
-    }
-  })
+    onError: (err) => toast.error(err.message),
+  });
+
+  const { mutate: editingCabin, isLoading: isEditing } = useMutation({
+    mutationFn: ({ newCabinData, id }) => createEditCabin(newCabinData, id),
+    onSuccess: () => {
+      toast.success("Cabin successfully edited");
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const isWorking = isEditing || isCreating;
 
   const onSubmit=(data)=>{
-    mutate(data);
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+    console.log(data);
+    if (isEdit)
+      editingCabin(
+        { newCabinData: { ...data, image }, id: cabinId },
+        {
+          onSuccess: (data) => {
+            reset();
+          },
+        }
+      );
+    else
+      creatingCabin(
+        { ...data, image: image },
+        {
+          onSuccess: (data) => {
+            reset();
+          },
+        }
+      );
   }
 
   const onError=(errors)=>{
@@ -72,8 +104,10 @@ function CreateCabinForm() {
         })} />
       </FormRow>
 
-      <FormRow label="Cabin photo">
-        <FileInput id="image" accept="image/*" />
+      <FormRow label="Cabin photo" error={errors?.image?.message}>
+        <FileInput id="image" accept="image/*" {...register("image",{
+           required:isEdit ? false :"this filed is required"
+        })} />
       </FormRow>
 
       <FormRow>
@@ -81,7 +115,7 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isAdding}>Add cabin</Button>
+        <Button disabled={isWorking}>{isEdit ? "Edit Cabin" : "Add Cabin"}</Button>
       </FormRow>
     </Form>
   );

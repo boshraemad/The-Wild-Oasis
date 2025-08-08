@@ -3,6 +3,8 @@ import {formatCurrency} from "../../utils/helpers"
 import { useQueryClient , useMutation } from "@tanstack/react-query";
 import { deleteCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import CreateCabinForm from "./CreateCabinForm";
 
 const TableRow = styled.div`
   display: grid;
@@ -43,8 +45,12 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-
+const FlexContainer=styled.div`
+  display:flex;
+  gap:4px;
+`
 export default function CabinRow({cabin}) {
+  const [showForm , setShowForm]=useState(false);
   const {id:cabinId ,image , name , maxCapacity , regularPrice , discount } = cabin;
 
   const queryClient=useQueryClient();
@@ -63,13 +69,19 @@ export default function CabinRow({cabin}) {
   })
 
   return (
+<>
     <TableRow role="row">
         <Img src={image}/>
         <Cabin>{name}</Cabin>
         <Cabin>{maxCapacity}</Cabin>
         <Price>{formatCurrency(regularPrice)}</Price>
         <Discount>{formatCurrency(discount)}</Discount>
-        <button disabled={isDeleting} onClick={cabinId=>mutate(cabinId)}>Delete</button>
+       <FlexContainer>
+       <button disabled={isDeleting} onClick={cabinId=>mutate(cabinId)}>Delete</button>
+       <button disabled={isDeleting} onClick={()=>setShowForm(showForm=>!showForm)}>Edit</button>
+       </FlexContainer>
     </TableRow>
+    {showForm && <CreateCabinForm editCabin={cabin}/>}
+</>
   )
 }
