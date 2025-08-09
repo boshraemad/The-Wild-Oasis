@@ -5,6 +5,7 @@ import { deleteCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
+import { useDeleteCabin } from "./useDeleteCabins";
 
 const TableRow = styled.div`
   display: grid;
@@ -52,21 +53,7 @@ const FlexContainer=styled.div`
 export default function CabinRow({cabin}) {
   const [showForm , setShowForm]=useState(false);
   const {id:cabinId ,image , name , maxCapacity , regularPrice , discount } = cabin;
-
-  const queryClient=useQueryClient();
-
-  const {isLoading:isDeleting , mutate}=useMutation({
-    mutationFn:()=>deleteCabin(cabinId),
-
-    onSuccess:()=>{
-      toast.success("cabin deleted successfully");
-      queryClient.refetchQueries();
-    }
-    ,
-    onError:()=>{
-      toast.error("couldnt delete cabin")
-    }
-  })
+  const {isDeleting , deleteCabins}=useDeleteCabin(cabinId);
 
   return (
 <>
@@ -77,7 +64,7 @@ export default function CabinRow({cabin}) {
         <Price>{formatCurrency(regularPrice)}</Price>
         <Discount>{formatCurrency(discount)}</Discount>
        <FlexContainer>
-       <button disabled={isDeleting} onClick={cabinId=>mutate(cabinId)}>Delete</button>
+       <button disabled={isDeleting} onClick={cabinId=>deleteCabins(cabinId)}>Delete</button>
        <button disabled={isDeleting} onClick={()=>setShowForm(showForm=>!showForm)}>Edit</button>
        </FlexContainer>
     </TableRow>
