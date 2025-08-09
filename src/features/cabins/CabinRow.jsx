@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import {formatCurrency} from "../../utils/helpers"
-import { useQueryClient , useMutation } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabins";
+import { useCreateCabin } from "./useCreateCabin";
+import { BiSolidDuplicate } from "react-icons/bi";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 
 const TableRow = styled.div`
   display: grid;
@@ -54,7 +55,19 @@ export default function CabinRow({cabin}) {
   const [showForm , setShowForm]=useState(false);
   const {id:cabinId ,image , name , maxCapacity , regularPrice , discount } = cabin;
   const {isDeleting , deleteCabins}=useDeleteCabin(cabinId);
+  const {isCreating , creatingCabin}=useCreateCabin();
 
+  const handleDuplicating=()=>{
+    const newCabin={
+      name:`cope of ${name}`,
+      maxCapacity 
+      , regularPrice
+      , discount
+      ,image
+    }
+
+    creatingCabin(newCabin);
+  }
   return (
 <>
     <TableRow role="row">
@@ -64,8 +77,9 @@ export default function CabinRow({cabin}) {
         <Price>{formatCurrency(regularPrice)}</Price>
         <Discount>{formatCurrency(discount)}</Discount>
        <FlexContainer>
-       <button disabled={isDeleting} onClick={cabinId=>deleteCabins(cabinId)}>Delete</button>
-       <button disabled={isDeleting} onClick={()=>setShowForm(showForm=>!showForm)}>Edit</button>
+       <button disabled={isCreating} onClick={()=>handleDuplicating()}><BiSolidDuplicate/></button>
+       <button disabled={isDeleting} onClick={cabinId=>deleteCabins(cabinId)}><MdDelete/></button>
+       <button disabled={isDeleting} onClick={()=>setShowForm(showForm=>!showForm)}><MdEdit/></button>
        </FlexContainer>
     </TableRow>
     {showForm && <CreateCabinForm editCabin={cabin}/>}
