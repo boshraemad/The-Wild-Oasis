@@ -8,7 +8,7 @@ import FormRow from "./CabinFormRow";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
 
-function CreateCabinForm({editCabin={}}) {
+function CreateCabinForm({editCabin={} , onClose}) {
   const {id:cabinId , ...editValues}=editCabin;
   const isEdit=Boolean(cabinId);
   const {isCreating , creatingCabin}=useCreateCabin();
@@ -48,7 +48,7 @@ function CreateCabinForm({editCabin={}}) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit,onError)}>
+    <Form onSubmit={handleSubmit(onSubmit,onError)} type={`${onClose} ? "modal" : "regular`}>
       <FormRow label="cabin name" error={errors?.name?.message}>
         <Input type="text" id="name" {...register("name",{
            required:"this filed is required"
@@ -92,10 +92,10 @@ function CreateCabinForm({editCabin={}}) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" size="small" type="reset" onClick={()=>onClose?.()}>
           Cancel
         </Button>
-        <Button disabled={isWorking}>{isEdit ? "Edit Cabin" : "Add Cabin"}</Button>
+        <Button variation="primary" size="small" disabled={isWorking}>{isEdit ? "Edit Cabin" : "Add Cabin"}</Button>
       </FormRow>
     </Form>
   );

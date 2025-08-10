@@ -1,10 +1,9 @@
-import { useState } from "react";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import CabinTable from "../features/cabins/CabinTable";
 import CreateCabinForm from "../features/cabins/CreateCabinForm"
+import AddCabin from "../features/cabins/addCabin";
 function Cabins() {
-  const [openForm , setOpenForm]=useState("");
 
   return (
     <>
@@ -14,10 +13,7 @@ function Cabins() {
     </Row>
     <Row type="vertical">
       <CabinTable/>
-      <button onClick={()=>setOpenForm((openForm)=>!openForm)}>add New Cabin</button>
-      {
-        openForm&&<CreateCabinForm/>
-      }
+      <AddCabin/>
     </Row>
     </>
 
