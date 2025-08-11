@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { IoCloseSharp } from "react-icons/io5";
 import { createPortal } from "react-dom";
-import { cloneElement, createContext , useContext , useState } from "react";
+import { cloneElement, createContext , useContext , useState , useEffect , useRef } from "react";
+import useCloseModal from "../hooks/useCloseModal";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -76,10 +77,12 @@ function Open({children , opens:opensWindowName}){
 
 export function Window({children , name}) {
   const {openName , close}=useContext(ModalContext);
+  const ref=useCloseModal(close);
+
   if(name !== openName) return null;
   return createPortal(
    <Overlay>
-    <StyledModal>
+    <StyledModal ref={ref}>
       <Button onClick={close}><IoCloseSharp/></Button>
       {cloneElement(children , {onClose:()=>close})}
     </StyledModal>
