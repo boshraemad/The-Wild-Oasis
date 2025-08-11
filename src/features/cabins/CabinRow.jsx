@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import {formatCurrency} from "../../utils/helpers"
-import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabins";
 import { useCreateCabin } from "./useCreateCabin";
@@ -9,19 +8,18 @@ import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
-import { deleteCabin } from "../../services/apiCabins";
+import Table from "../../ui/Table";
+// const TableRow = styled.div`
+//   display: grid;
+//   grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
+//   column-gap: 2.4rem;
+//   align-items: center;
+//   padding: 1.4rem 2.4rem;
 
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
-  column-gap: 2.4rem;
-  align-items: center;
-  padding: 1.4rem 2.4rem;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-`;
+//   &:not(:last-child) {
+//     border-bottom: 1px solid var(--color-grey-100);
+//   }
+// `;
 
 const Img = styled.img`
   display: block;
@@ -72,7 +70,7 @@ export default function CabinRow({cabin}) {
   }
   return (
 <>
-    <TableRow role="row">
+    <Table.Row role="row">
         <Img src={image}/>
         <Cabin>{name}</Cabin>
         <Cabin>{maxCapacity}</Cabin>
@@ -99,7 +97,7 @@ export default function CabinRow({cabin}) {
         </Modal.window>
        </Modal>
        </FlexContainer>
-    </TableRow>
+    </Table.Row>
 </>
   )
 }
