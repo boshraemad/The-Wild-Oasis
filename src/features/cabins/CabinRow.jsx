@@ -7,6 +7,9 @@ import { useCreateCabin } from "./useCreateCabin";
 import { BiSolidDuplicate } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { deleteCabin } from "../../services/apiCabins";
 
 const TableRow = styled.div`
   display: grid;
@@ -52,7 +55,6 @@ const FlexContainer=styled.div`
   gap:4px;
 `
 export default function CabinRow({cabin}) {
-  const [showForm , setShowForm]=useState(false);
   const {id:cabinId ,image , name , maxCapacity , regularPrice , discount } = cabin;
   const {isDeleting , deleteCabins}=useDeleteCabin(cabinId);
   const {isCreating , creatingCabin}=useCreateCabin();
@@ -78,11 +80,26 @@ export default function CabinRow({cabin}) {
         <Discount>{formatCurrency(discount)}</Discount>
        <FlexContainer>
        <button disabled={isCreating} onClick={()=>handleDuplicating()}><BiSolidDuplicate/></button>
-       <button disabled={isDeleting} onClick={cabinId=>deleteCabins(cabinId)}><MdDelete/></button>
-       <button disabled={isDeleting} onClick={()=>setShowForm(showForm=>!showForm)}><MdEdit/></button>
+       <Modal>
+        <Modal.open opens="delete">
+        {/* onClick={cabinId=>deleteCabins(cabinId)}
+        disabled={isDeleting} */}
+        <button><MdDelete/></button>
+        </Modal.open>
+        <Modal.window name="delete">
+          <ConfirmDelete resourceName="Cabin" disabled={isDeleting} onConfirm={deleteCabins}/>
+        </Modal.window>
+       </Modal>
+       <Modal>
+        <Modal.open opens="edit">
+        <button><MdEdit/></button>
+        </Modal.open>
+        <Modal.window name="edit">
+        <CreateCabinForm editCabin={cabin}/>
+        </Modal.window>
+       </Modal>
        </FlexContainer>
     </TableRow>
-    {showForm && <CreateCabinForm editCabin={cabin}/>}
 </>
   )
 }

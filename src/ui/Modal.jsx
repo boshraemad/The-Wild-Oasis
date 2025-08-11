@@ -84,7 +84,7 @@ export function Window({children , name}) {
    <Overlay>
     <StyledModal ref={ref}>
       <Button onClick={close}><IoCloseSharp/></Button>
-      {cloneElement(children , {onClose:()=>close})}
+      {cloneElement(children , {onClose:close})}
     </StyledModal>
    </Overlay>
   , document.body)
