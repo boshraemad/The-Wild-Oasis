@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { IoCloseSharp } from "react-icons/io5";
 import { createPortal } from "react-dom";
+import { cloneElement, createContext , useContext , useState } from "react";
+
 const StyledModal = styled.div`
   position: fixed;
   top: 50%;
@@ -51,14 +53,39 @@ const Button = styled.button`
 `;
 
 
+//use compound component structure
 
-export default function Modal({children , onClose}) {
+const ModalContext=createContext();
+
+export default function Modal({children}){
+const [openName,setOpenName]=useState("");
+const close=()=>setOpenName("");
+const open=setOpenName;
+return(
+  <ModalContext.Provider value={{openName , close , open}}>
+    {children}
+  </ModalContext.Provider>
+)
+} 
+
+function Open({children , opens:opensWindowName}){
+  const {open}=useContext(ModalContext);
+    return cloneElement(children , {onClick:()=>open(opensWindowName)});
+
+}
+
+export function Window({children , name}) {
+  const {openName , close}=useContext(ModalContext);
+  if(name !== openName) return null;
   return createPortal(
    <Overlay>
     <StyledModal>
-      <Button onClick={onClose}><IoCloseSharp/></Button>
-      {children}
+      <Button onClick={close}><IoCloseSharp/></Button>
+      {cloneElement(children , {onClose:()=>close})}
     </StyledModal>
    </Overlay>
   , document.body)
 }
+
+Modal.open=Open;
+Modal.window=Window;
