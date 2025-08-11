@@ -1,4 +1,8 @@
 import styled from "styled-components";
+import { useState , createContext , useContext } from "react";
+import { IoAccessibility, IoAccessibilitySharp, IoEllipsisVerticalSharp } from "react-icons/io5";
+import { createPortal } from "react-dom";
+import useCloseModal from "../hooks/useCloseModal";
 
 const StyledMenu = styled.div`
   display: flex;
@@ -60,3 +64,65 @@ const StyledButton = styled.button`
     transition: all 0.3s;
   }
 `;
+
+const MenuContext=createContext();
+
+export default function Menus({children}){
+  const [openId , setOpenId]=useState("");
+  const [position , setPosition]=useState(null);
+  const close = () => setOpenId("");
+  const open=setOpenId;
+  return(
+    <MenuContext.Provider value={{close,open ,openId , position , setPosition}}>
+      {children}
+    </MenuContext.Provider>
+  )
+}
+
+function Menu({children}){
+  return(
+    <StyledMenu>
+      {children}
+    </StyledMenu>
+  )
+}
+function Toggle({id}){
+  const {close ,open,openId,setPosition}=useContext(MenuContext);
+  function handleClick(e){
+    const rect = e.target.closest("button").getBoundingClientRect();
+    setPosition({
+      x:window.innerWidth - rect.width - rect.x,
+      y:rect.y + rect.height + 8,
+    })
+    openId !== id || openId === "" ? open(id) : close;
+  }
+  return( <StyledToggle onClick={handleClick}>
+    <IoEllipsisVerticalSharp/>
+  </StyledToggle>
+  )
+}
+function List({children , id}){
+  const {openId , position , close} = useContext(MenuContext);
+  const ref=useCloseModal(close);
+  if(openId !== id) return null;
+
+  return(
+    createPortal(
+      <StyledList ref={ref} position={position}>{children}</StyledList>,
+      document.body
+    )
+  )
+}
+
+function Button({children , onClick , icon}){
+  const {close}=useContext(MenuContext);
+  function handleClick(){
+    onClick?.();
+    close();
+  }
+  return <li><StyledButton onClick={handleClick}>{icon} <span>{children}</span></StyledButton></li>
+}
+Menus.Menu=Menu;
+Menus.List=List;
+Menus.Toggle=Toggle;
+Menus.Button=Button;
