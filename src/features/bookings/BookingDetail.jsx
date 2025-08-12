@@ -10,7 +10,7 @@ import { useMoveBack } from "../../hooks/useMoveBack";
 import useBooking from "./useBooking";
 import Spinner from "../../ui/Spinner";
 import useCheckout from "../../features/check-in-out/useCheckout";
- 
+import { useDeleteBooking } from "./useDeleteBooking";
 const HeadingGroup = styled.div`
   display: flex;
   gap: 2.4rem;
@@ -21,6 +21,7 @@ function BookingDetail() {
   const {data:booking={} , isLoading } = useBooking();
   const {status , id} = booking;
   const {checkingout , isCheckingout} = useCheckout();
+  const {deletingBooking , isDeleting} = useDeleteBooking();
 
   const moveBack = useMoveBack();
 
@@ -44,13 +45,16 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
+      <Button variation="danger" size="small" onClick={()=>deletingBooking(id)} disabled={isDeleting}>
+          Delete
+        </Button>
       {
             status === "checked-in" && 
             <Button variation="primary" size="small" onClick={()=>checkingout(id)} disabled={isCheckingout}>
             check-out
           </Button>
           }
-        <Button variation="secondary" onClick={moveBack}>
+        <Button variation="secondary" size="small" onClick={moveBack}>
           Back
         </Button>
       </ButtonGroup>

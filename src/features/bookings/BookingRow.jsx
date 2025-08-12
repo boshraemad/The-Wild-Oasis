@@ -10,6 +10,9 @@ import { BsArrowDownSquareFill } from "react-icons/bs";
 import { BsFillArrowUpSquareFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import useCheckout from "../../features/check-in-out/useCheckout";
+import { useDeleteBooking } from "./useDeleteBooking";
+import { MdDelete } from "react-icons/md";
+
 const Cabin = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
@@ -59,6 +62,7 @@ function BookingRow({
 
   const navigate = useNavigate();
   const {checkingout , isCheckingout} = useCheckout();
+  const {deletingBooking , isDeleting} = useDeleteBooking();
   return (
     <Table.Row>
       <Cabin>{cabinName}</Cabin>
@@ -104,6 +108,9 @@ function BookingRow({
             check-out
           </Menus.Button>
           }
+          <Menus.Button icon={<MdDelete/>} onClick={()=>deletingBooking(bookingId)}>
+            Delete
+          </Menus.Button>
         </Menus.List>
       </Menus.Menu>
     </Table.Row>
