@@ -6,7 +6,7 @@ export default function useBooking() {
     const {bookingId} = useParams();
 
     const {data , error , isLoading}=useQuery({
-        queryKey:["booking"],
+        queryKey:["booking" , bookingId],
         queryFn:()=>getBookingById(bookingId),
         retry:false
       })

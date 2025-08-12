@@ -13,6 +13,7 @@ import AppLayout from "./ui/AppLayout";
 import { Toaster } from "react-hot-toast";
 import Settings from "./pages/Settings";
 import BookingPage from "./pages/BookingPage";
+import CheckIn from "./pages/CheckIn";
 //create react query client
 
 const queryClient = new QueryClient({
@@ -37,6 +38,7 @@ function App() {
       <Route path="/cabins" element={<Cabins/>}/>
       <Route path="/bookings" element={<Bookings/>}/>
       <Route path="/bookings/:bookingId" element={<BookingPage/>}/>
+      <Route path="/checkin/:bookingId" element={<CheckIn/>}/>
       <Route path="/users" element={<Users/>}/>
       <Route path="/account" element={<Account/>}/>
       <Route path="/settings" element={<Settings/>}/>

@@ -6,6 +6,7 @@ import Table from "../../ui/Table";
 import { CgDetailsMore } from "react-icons/cg";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
+import { FaCalendarCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const Cabin = styled.div`
@@ -89,6 +90,12 @@ function BookingRow({
           <Menus.Button icon={<CgDetailsMore/>} onClick={()=>navigate(`/bookings/${bookingId}`)}>
             show Details
           </Menus.Button>
+          {
+            status === "unconfirmed" && 
+            <Menus.Button icon={<FaCalendarCheck/>} onClick={()=>navigate(`/checkin/${bookingId}`)}>
+            checkin
+          </Menus.Button>
+          }
         </Menus.List>
       </Menus.Menu>
     </Table.Row>
