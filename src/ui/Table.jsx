@@ -97,8 +97,12 @@ function Body({data , render}){
     </StyledBody>
   )
 }
-function Footer(){
-
+function Footer({children}){
+  return(
+    <>
+      {children}
+    </>
+  )
 }
 
 Table.Header=Header;
