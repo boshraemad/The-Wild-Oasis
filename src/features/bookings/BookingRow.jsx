@@ -6,9 +6,10 @@ import Table from "../../ui/Table";
 import { CgDetailsMore } from "react-icons/cg";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
-import { FaCalendarCheck } from "react-icons/fa6";
+import { BsArrowDownSquareFill } from "react-icons/bs";
+import { BsFillArrowUpSquareFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-
+import useCheckout from "../../features/check-in-out/useCheckout";
 const Cabin = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
@@ -57,6 +58,7 @@ function BookingRow({
   };
 
   const navigate = useNavigate();
+  const {checkingout , isCheckingout} = useCheckout();
   return (
     <Table.Row>
       <Cabin>{cabinName}</Cabin>
@@ -92,8 +94,14 @@ function BookingRow({
           </Menus.Button>
           {
             status === "unconfirmed" && 
-            <Menus.Button icon={<FaCalendarCheck/>} onClick={()=>navigate(`/checkin/${bookingId}`)}>
-            checkin
+            <Menus.Button icon={<BsArrowDownSquareFill/>} onClick={()=>navigate(`/checkin/${bookingId}`)}>
+            check-in
+          </Menus.Button>
+          }
+             {
+            status === "checked-in" && 
+            <Menus.Button icon={<BsFillArrowUpSquareFill/>} onClick={()=>checkingout(bookingId)} disabled={isCheckingout}>
+            check-out
           </Menus.Button>
           }
         </Menus.List>

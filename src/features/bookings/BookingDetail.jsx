@@ -9,7 +9,8 @@ import ButtonText from "../../ui/ButtonText";
 import { useMoveBack } from "../../hooks/useMoveBack";
 import useBooking from "./useBooking";
 import Spinner from "../../ui/Spinner";
-
+import useCheckout from "../../features/check-in-out/useCheckout";
+ 
 const HeadingGroup = styled.div`
   display: flex;
   gap: 2.4rem;
@@ -19,6 +20,7 @@ const HeadingGroup = styled.div`
 function BookingDetail() {
   const {data:booking={} , isLoading } = useBooking();
   const {status , id} = booking;
+  const {checkingout , isCheckingout} = useCheckout();
 
   const moveBack = useMoveBack();
 
@@ -42,6 +44,12 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
+      {
+            status === "checked-in" && 
+            <Button variation="primary" size="small" onClick={()=>checkingout(id)} disabled={isCheckingout}>
+            check-out
+          </Button>
+          }
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>
