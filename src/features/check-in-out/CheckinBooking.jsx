@@ -11,6 +11,8 @@ import Spinner from "../../ui/Spinner"
 import { useState , useEffect} from "react";
 import Checkbox from "../../ui/Checkbox"
 import useCheckin from "./useCheckin";
+import { useSettings } from "../settings/useSettings";
+import { formatCurrency } from "../../utils/helpers";
 
 const Box = styled.div`
   /* Box */
@@ -22,9 +24,12 @@ const Box = styled.div`
 
 function CheckinBooking() {
   const [confirmPaid , setConfirmPaid]=useState(false);
+  const [breakfast , setBreakfast]=useState(false);
   const moveBack = useMoveBack();
   const {data:booking={}, isLoading} = useBooking();
   const {checkingin , isCheckingIn}=useCheckin();
+  const {settings , isLoading:isSetting}=useSettings();
+
   const {
     id:bookingId,
     guests,
@@ -40,10 +45,20 @@ function CheckinBooking() {
 
   function handleCheckin() {
     if(!confirmPaid) return;
-    checkingin(bookingId);
+    if(breakfast){
+      checkingin({bookingId ,breakfast: {
+        hasBreakfast: true,
+        extraPrice: optionalBreakfast,
+        totalPrice: totalPrice + optionalBreakfast,
+      }})
+    }else{
+    checkingin({bookingId , breakfast:{}});
+    }
   }
 
-  if(isLoading) return <Spinner/>
+  if(isLoading || isSetting) return <Spinner/>
+
+  const optionalBreakfast = settings.breakfastPrice * numGuests * numNights;
   return (
     <>
       <Row type="horizontal">
@@ -52,8 +67,16 @@ function CheckinBooking() {
       </Row>
 
       <BookingDataBox booking={booking} />
+      {
+        !hasBreakfast &&  
+        <Box>
+        <Checkbox id="breakfast" checked={breakfast} onChange={()=>{setBreakfast(!breakfast);
+          setConfirmPaid(false)
+        }}>Add Breakfast {" "}{formatCurrency(optionalBreakfast)} </Checkbox>
+        </Box>
+      }
       <Box>
-        <Checkbox checked={confirmPaid} onChange={()=>{setConfirmPaid(!confirmPaid)}} disabled={confirmPaid || isCheckingIn}>I confirm that {guests.fullName} has checked in the amount {totalPrice} </Checkbox>
+        <Checkbox id="confirm" checked={confirmPaid} onChange={()=>{setConfirmPaid(!confirmPaid)}} disabled={confirmPaid || isCheckingIn}>I confirm that {guests.fullName} has checked in the amount {breakfast ? formatCurrency(totalPrice + optionalBreakfast) :formatCurrency(totalPrice)} </Checkbox>
       </Box>
       <ButtonGroup>
         {
