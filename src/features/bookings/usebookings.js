@@ -10,10 +10,11 @@ export const useBookings=()=>{
     const [field, direction] = sortByRaw.split("-");
     const sortBy={field , direction}
     
-    const {data:bookings , error , isLoading}=useQuery({
-        queryKey:["bookings" , filter , sortBy],
-        queryFn:()=>getBookings({filter , sortBy}),
+    const page = Number(searchParams.get("page")) || 1;
+    const { data: { data: bookings, count } = {} , error , isLoading}=useQuery({
+        queryKey:["bookings" , filter , sortBy , page],
+        queryFn:()=>getBookings({filter , sortBy , page}),
       })
 
-      return {bookings , isLoading}
+      return {bookings , isLoading , count}
 }
