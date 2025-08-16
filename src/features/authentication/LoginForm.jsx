@@ -12,7 +12,13 @@ function LoginForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    loginUser({email , password});
+    loginUser({email , password} , {
+      onSettled:()=>{
+        setEmail(""),
+        setPassword("")
+      }
+    }
+  );
   }
 
   return (
