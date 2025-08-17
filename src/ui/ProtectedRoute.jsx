@@ -16,7 +16,7 @@ export default function ProtectedRoute({children}) {
     const navigate = useNavigate();
 
     useEffect(()=>{
-        if(!isAuthenticated && !isLoading) navigate("/login")
+        if(!isAuthenticated && !isLoading) navigate("/login" , {replace:true})
     },[isAuthenticated , isLoading , navigate])
 
     if(isLoading) return <FullPage><Spinner/></FullPage>
