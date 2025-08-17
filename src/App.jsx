@@ -15,8 +15,9 @@ import Settings from "./pages/Settings";
 import BookingPage from "./pages/BookingPage";
 import CheckIn from "./pages/CheckIn";
 import ProtectedRoute from "./ui/ProtectedRoute";
-//create react query client
+import DarkMoodProvider from "./context/DarkMoodContext";
 
+//create react query client
 const queryClient = new QueryClient({
   defaultOption:{
     queries:{
@@ -26,7 +27,7 @@ const queryClient = new QueryClient({
 })
 function App() {
   return (
- <>
+ <DarkMoodProvider>
  <QueryClientProvider client={queryClient}>
   <ReactQueryDevtools initialIsOpen={false}/>
  <BrowserRouter>
@@ -69,7 +70,7 @@ function App() {
         }}
       />
  </QueryClientProvider>
- </>
+ </DarkMoodProvider>
   )
 }
 
