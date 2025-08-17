@@ -3,17 +3,19 @@ import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import { useForm } from "react-hook-form";
-// Email regex: /\S+@\S+\.\S+/
+import useSignup from "./useSignup";
 
 function SignupForm() {
 
-  const {register , formState , getValues , handleSubmit} = useForm();
+  const {register , formState , getValues , handleSubmit , reset} = useForm();
   const {errors} = formState;
-
-  const onSubmit=(data)=>{
-    console.log(data);
+  const {isLoading , signupUser} = useSignup();
+  const onSubmit=({fullName , email , password})=>{
+    signupUser({fullName , email , password} , {
+      onSettled:reset()
+    })
   }
-  
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow label="Full name" error={errors?.fullName?.message}>
@@ -23,7 +25,7 @@ function SignupForm() {
       </FormRow>
 
       <FormRow label="Email address" error={errors?.email?.message}>
-        <Input type="email" id="email" {...register("email" , {
+        <Input disabled={isLoading} type="email" id="email" {...register("email" , {
           required:"this field is required" ,
           pattern:{
             value:/\S+@\S+\.\S+/,
@@ -33,7 +35,7 @@ function SignupForm() {
       </FormRow>
 
       <FormRow label="Password (min 8 characters)" error={errors?.password?.message}>
-        <Input type="password" id="password" {...register("password" , {
+        <Input disabled={isLoading} type="password" id="password" {...register("password" , {
           required:"this field is required",
           minLength:{
             value:8,
@@ -43,7 +45,7 @@ function SignupForm() {
       </FormRow>
 
       <FormRow label="Repeat password" error={errors?.passwordConfirm?.message}>
-        <Input type="password" id="passwordConfirm" {...register("passwordConfirm" , {
+        <Input disabled={isLoading} type="password" id="passwordConfirm" {...register("passwordConfirm" , {
           required:"this field is required",
           validate:{
             value:(value)=>value === getValues().password || "passwords need to match"
@@ -53,10 +55,10 @@ function SignupForm() {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" size="medium" type="reset">
+        <Button disabled={isLoading} variation="secondary" size="medium" type="reset">
           Cancel
         </Button>
-        <Button size="medium" variation="primary">Create new user</Button>
+        <Button disabled={isLoading} size="medium" variation="primary">Create new user</Button>
       </FormRow>
     </Form>
   );

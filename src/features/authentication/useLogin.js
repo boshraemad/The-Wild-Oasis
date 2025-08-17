@@ -15,7 +15,6 @@ const queryClient = useQueryClient();
         navigate("/");
     },
     onError:(error)=>{
-        console.log(error);
         toast.error(error.message);
     }
   })
