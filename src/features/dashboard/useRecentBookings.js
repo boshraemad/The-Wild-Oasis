@@ -10,7 +10,6 @@ export default function useRecentBookings() {
     ? 7
     : Number(searchParams.get("last"));
 
-    console.log(numDays)
   const queryDate = subDays(new Date(), numDays).toISOString();
 
   const { isLoading, data: bookings } = useQuery({
