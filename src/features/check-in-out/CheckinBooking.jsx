@@ -48,7 +48,7 @@ function CheckinBooking() {
     if(breakfast){
       checkingin({bookingId ,breakfast: {
         hasBreakfast: true,
-        extraPrice: optionalBreakfast,
+        extrasPrice: optionalBreakfast,
         totalPrice: totalPrice + optionalBreakfast,
       }})
     }else{
