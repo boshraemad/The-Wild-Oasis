@@ -50,7 +50,7 @@ const Discount = styled.div`
 `;
 
 function CabinRow({ cabin }) {
-  const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { isDeleting, deleteCabins } = useDeleteCabin();
   const { isCreating, creatingCabin } = useCreateCabin();
 
   const {
@@ -62,6 +62,7 @@ function CabinRow({ cabin }) {
     image,
     description,
   } = cabin;
+
 
   function handleDuplicate() {
     creatingCabin({
@@ -112,7 +113,7 @@ function CabinRow({ cabin }) {
               <ConfirmDelete
                 resourceName="cabins"
                 disabled={isDeleting}
-                onConfirm={() => deleteCabin(cabinId)}
+                onConfirm={() => deleteCabins(cabinId)}
               />
             </Modal.window>
           </Menus.Menu>
